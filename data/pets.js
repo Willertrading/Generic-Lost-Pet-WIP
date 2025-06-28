@@ -57,6 +57,21 @@ window.PET_DATA = {
     owners: `CJ Knapp and Scott Garrett\n14285 NW 65th Place\nParkville, MO 64152`,
     contacts: `Vet: Parkville Heights Animal Hospital - 816-741-2247\nCJ: 816-719-8259\nScott: 816-719-7599`,
     ownerPhone: "+18167197599", 
+
+    },
+    
+  bug: {
+    name: "Bug",
+    species: "Cat",
+    breed: "Chinese Shorthair",
+    color: "Red",
+    sex: "Female",
+    birthday: "2020-03-12",
+    img: "images/bug.jpg",
+    about: `Hi, I'm Bug!\nI am a fighter.\nI have no allergies.\nI love snuggling.`,
+    owners: `Shawn Knapp\n14285 NW 65th Place\nNICE CITY, CHINA`,
+    contacts: `Vet: China Hospital - 816-741-2247\nShawn Knapp: 816-719-8259`,
+    ownerPhone: "+18167197599", 
   }
 
   
