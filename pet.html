@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Found Pet Location</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .main-header {
+      font-size: 48px;
+      font-weight: bold;
+      color: red;
+      margin-top: 0;
+      padding: 20px;
+      background-color: #fff3cd;
+      border-bottom: 4px solid red;
+    }
+
+    .pet-name {
+      font-size: 44px;
+      font-weight: bold;
+      margin: 10px 0 20px;
+      color: #333;
+    }
+
+    .tags {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      padding: 5px 12px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .species { background-color: #4caf50; }
+    .breed   { background-color: #607d8b; }
+    .color   { background-color: #ff9800; }
+    .sex     { background-color: #42a5f5; }
+    .age     { background-color: #9c27b0; }
+
+    button {
+      padding: 15px 30px;
+      font-size: 30px;
+      background: #ffcc00;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    p { line-height: 1.6; }
+  </style>
+
+  <!-- Pet data -->
+  <script src="data/pets.js"></script>
+</head>
+<body>
+
+  <h1 class="main-header">🚨 FOUND PET 🚨</h1>
+  <img id="pet-img" style="max-width:300px; border-radius:20px;" alt="Found pet">
+  <h2 class="pet-name" id="pet-name"></h2>
+
+  <div class="tags">
+    <span class="tag species" id="pet-species"></span>
+    <span class="tag breed"   id="pet-breed"></span>
+    <span class="tag color"   id="pet-color"></span>
+    <span class="tag sex"     id="pet-sex"></span>
+    <span class="tag age"     id="pet-age"></span>
+  </div>
+
+  <h2>About Me</h2>
+  <p id="pet-about"></p>
+
+  <h2>My Owners</h2>
+  <p id="pet-owners"></p>
+
+  <h2>Important Numbers</h2>
+  <p id="pet-contacts"></p>
+
+  <h2>🐾 Help Me Get Home!</h2>
+  <p>Tap the button below to share your location with my owner via text.</p>
+  <button onclick="shareAndText()">📍 Text and Share My Location</button>
+  <p id="status"></p>
+  <p id="location"></p>
+
+  <script>
+let pet;
+
+(function() {
+  const params = new URLSearchParams(location.search);
+  const petId = params.get('pet');
+  pet = window.PET_DATA?.[petId];
+  if (!pet) {
+    document.body.innerHTML = '<h2>🐾 Pet not found</h2>';
+    return;
+  }
+
+  document.getElementById('pet-name').textContent = pet.name;
+  document.getElementById('pet-species').textContent = '🐾 ' + pet.species;
+  document.getElementById('pet-breed').textContent = pet.breed;
+  document.getElementById('pet-color').textContent = '🎨 ' + pet.color;
+  document.getElementById('pet-sex').textContent = '⚥ ' + pet.sex;
+  document.getElementById('pet-img').src = pet.img;
+
+  const bd = new Date(pet.birthday);
+  const now = new Date();
+  let age = now.getFullYear() - bd.getFullYear();
+  const mDiff = now.getMonth() - bd.getMonth();
+  const dDiff = now.getDate() - bd.getDate();
+  if (mDiff < 0 || (mDiff === 0 && dDiff < 0)) age--;
+  document.getElementById('pet-age').textContent = '🎂 Age: ' + age;
+
+  document.getElementById('pet-about').innerHTML = pet.about.replace(/\n/g, '<br>');
+  document.getElementById('pet-owners').innerHTML = pet.owners.replace(/\n/g, '<br>');
+  document.getElementById('pet-contacts').innerHTML = pet.contacts.replace(/\n/g, '<br>');
+})();
+
+function shareAndText() {
+  const status = document.getElementById('status');
+  const output = document.getElementById('location');
+
+  if (!navigator.geolocation) {
+    status.textContent = 'Geolocation not supported.';
+    return;
+  }
+
+  status.textContent = 'Getting location…';
+
+  // Capture location and immediately send SMS
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lon = pos.coords.longitude.toFixed(6);
+      output.innerHTML = `📍 Latitude: ${lat}, Longitude: ${lon}`;
+
+      const phone = pet.ownerPhone || '';
+      const msg = encodeURIComponent(`I found ${pet.name}! My location: https://maps.google.com/?q=${lat},${lon}`);
+      const smsLink = `sms:${phone}?&body=${msg}`;
+
+      // Try to immediately redirect
+      status.textContent = '✅ Opening SMS app…';
+      window.location.href = smsLink;
+    },
+    (err) => {
+      status.textContent = '⚠️ Unable to get location. Please allow location access.';
+    }
+  );
+}
+</script>
+</body>
+</html>
