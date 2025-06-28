@@ -118,7 +118,7 @@ let pet;
   const mDiff = now.getMonth() - bd.getMonth();
   const dDiff = now.getDate() - bd.getDate();
   if (mDiff < 0 || (mDiff === 0 && dDiff < 0)) age--;
-  document.getElementById('pet-age').textContent = '🎂 Age: ' + age;
+  document.getElementById('pet-age').textContent = 'Age: ' + age;
 
   document.getElementById('pet-about').innerHTML = pet.about.replace(/\n/g, '<br>');
   document.getElementById('pet-owners').innerHTML = pet.owners.replace(/\n/g, '<br>');
